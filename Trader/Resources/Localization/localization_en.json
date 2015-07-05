@@ -1,0 +1,42 @@
+{
+	"general" : {
+		"cancelButtonTitle" : {
+			"en" : "cancel",
+			"ru" : "отменить"
+		},
+		"deleteButtonTitle" : {
+			"en" : "delete",
+			"ru" : "удалить"
+		},
+		"errorTitle" : {
+			"en" : "error",
+			"ru" : "ошибка"
+		},
+		"timeBeginningButtonTitle" : {
+			"en" : "begin",
+			"ru" : "начало"
+		},
+		"timeEndButtonTitle" : {
+			"en" : "end",
+			"ru" : "конец"
+		},
+		"doneButtonTitle" : {
+			"en" : "done",
+			"ru" : "готово"
+		},
+		"saveButtonTitle" : {
+			"en" : "save",
+			"ru" : "сохранить"
+		},
+		"closeButtonTitle" : {
+			"en" : "close",
+			"ru" : "закрыть"
+		},
+		"alert" : {
+			"tryAgainLater" : {
+				"en" : "try again later",
+				"ru" : "попробуйте ещё раз"
+			}
+		}
+	}
+}
