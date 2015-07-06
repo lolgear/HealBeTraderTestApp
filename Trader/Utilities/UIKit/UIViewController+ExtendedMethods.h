@@ -20,4 +20,6 @@
 
 - (void)showNotificationError:(NSString *)errorString;
 
+- (void)hideNotifications;
+
 @end

@@ -32,4 +32,8 @@
     [TSMessage showNotificationInViewController:self title:[ILMStringsManager getGeneralErrorTitleString] subtitle:errorString type:TSMessageNotificationTypeError duration:3.0f canBeDismissedByUser:YES];
 }
 
+- (void)hideNotifications {
+    [TSMessage dismissActiveNotification];
+}
+
 @end
