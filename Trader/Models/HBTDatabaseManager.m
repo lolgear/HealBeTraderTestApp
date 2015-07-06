@@ -11,6 +11,8 @@
 #import "Currency.h"
 #import "Conversion.h"
 #import "NSFoundationExtendedMethods.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 @implementation HBTDatabaseManager
 
@@ -118,6 +120,7 @@
                 // should save currencies
                 if (responseObject[@"error"]) {
                     // do something :/
+                    DDLogDebug(@"error %@", responseObject[@"error"]);
                 }
                 else {
                     NSDictionary *responseDictionary = (NSDictionary *)responseObject;

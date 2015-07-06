@@ -201,7 +201,7 @@ static NSString *apiKey = @"f8a9b90bc6525a28e131b47630a60abc";
     [self commonHttpOperationWithType:HTTPOperationTypeGET withPath:liveEndpointName withParameters:params authorized:NO apiManager:[self apilayerManager] successBlock:successBlock errorBlock:errorBlock];
 }
 
-// Endpoint : { }
+// Endpoint : { Historical }
 // Params : {
 //    "access_key" : "YOUR_ACCESS_KEY"
 //    "date" : "YYYY-MM-DD"
