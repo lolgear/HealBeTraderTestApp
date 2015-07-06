@@ -11,6 +11,8 @@
 #import <MagicalRecord/MagicalRecord.h>
 #import "HBTDatabaseManager.h"
 
+static DDLogLevel ddLogLevel = DDLogLevelDebug;
+
 @interface AppDelegate ()
 
 @end
@@ -27,11 +29,20 @@
     [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
         if (error) {
             // do something
-            // show error?
-//            DDLogDebug(@"error: %@", error);
+            DDLogDebug(@"error: %@", error);
         }
     }];
     return YES;
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    
+    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
+        
+        UIBackgroundFetchResult fetchResult = error == nil ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed;
+        DDLogDebug(@"fetchedResult: %@", @(fetchResult) );
+        completionHandler(fetchResult);
+    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
