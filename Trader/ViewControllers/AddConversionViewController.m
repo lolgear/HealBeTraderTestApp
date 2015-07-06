@@ -33,7 +33,7 @@ NSString * destinationTypeTo = @"destinationTypeTo";
 }
 
 - (void) updateSave {
-    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && [HBTDatabaseManager conversionBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
+    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && ![HBTDatabaseManager conversionBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
 }
 
 - (void) setCurrencyCode:(NSString *)code forDesination:(NSString *)destination {

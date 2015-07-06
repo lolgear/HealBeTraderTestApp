@@ -13,7 +13,6 @@
 		044D29431B47E05C0054BAD4 /* Trader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 044D29081B47E05C0054BAD4 /* Trader.xcdatamodeld */; };
 		044D29441B47E05C0054BAD4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 044D290C1B47E05C0054BAD4 /* Images.xcassets */; };
 		044D29451B47E05C0054BAD4 /* Interfaces.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 044D290D1B47E05C0054BAD4 /* Interfaces.xcassets */; };
-		044D29461B47E05C0054BAD4 /* ios_localization_manager.rb in Resources */ = {isa = PBXBuildFile; fileRef = 044D290F1B47E05C0054BAD4 /* ios_localization_manager.rb */; };
 		044D29471B47E05C0054BAD4 /* localization.json in Resources */ = {isa = PBXBuildFile; fileRef = 044D29101B47E05C0054BAD4 /* localization.json */; };
 		044D29481B47E05C0054BAD4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044D29121B47E05C0054BAD4 /* LaunchScreen.xib */; };
 		044D29491B47E05C0054BAD4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 044D29141B47E05C0054BAD4 /* Main.storyboard */; };
@@ -70,7 +69,6 @@
 		044D29091B47E05C0054BAD4 /* Trader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Trader.xcdatamodel; sourceTree = "<group>"; };
 		044D290C1B47E05C0054BAD4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		044D290D1B47E05C0054BAD4 /* Interfaces.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Interfaces.xcassets; sourceTree = "<group>"; };
-		044D290F1B47E05C0054BAD4 /* ios_localization_manager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = ios_localization_manager.rb; sourceTree = "<group>"; };
 		044D29101B47E05C0054BAD4 /* localization.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = localization.json; sourceTree = "<group>"; };
 		044D29131B47E05C0054BAD4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		044D29151B47E05C0054BAD4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -260,7 +258,6 @@
 				044D295F1B47E4AC0054BAD4 /* GeneralLocalizationTable.strings */,
 				044D295C1B47E4A70054BAD4 /* ILMStringsManager.h */,
 				044D295D1B47E4A70054BAD4 /* ILMStringsManager.m */,
-				044D290F1B47E05C0054BAD4 /* ios_localization_manager.rb */,
 				044D29101B47E05C0054BAD4 /* localization.json */,
 			);
 			path = Localization;
@@ -482,7 +479,6 @@
 				044D29481B47E05C0054BAD4 /* LaunchScreen.xib in Resources */,
 				044D29441B47E05C0054BAD4 /* Images.xcassets in Resources */,
 				044D297D1B4878C00054BAD4 /* currencies.json in Resources */,
-				044D29461B47E05C0054BAD4 /* ios_localization_manager.rb in Resources */,
 				044D29491B47E05C0054BAD4 /* Main.storyboard in Resources */,
 				044D29611B47E4AC0054BAD4 /* GeneralLocalizationTable.strings in Resources */,
 				044D29471B47E05C0054BAD4 /* localization.json in Resources */,
