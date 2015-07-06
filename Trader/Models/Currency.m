@@ -16,4 +16,9 @@
 @dynamic name;
 @dynamic currencies;
 
+- (NSString *)label {
+    return
+    [[self.code stringByAppendingString:@" - "] stringByAppendingString:self.name];
+}
+
 @end

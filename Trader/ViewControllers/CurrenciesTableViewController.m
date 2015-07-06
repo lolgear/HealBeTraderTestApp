@@ -15,6 +15,9 @@
 
 @interface CurrenciesTableViewController () <UISearchBarDelegate>
 @property (strong, nonatomic) Currency *chosenCurrency;
+
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+
 @end
 
 @implementation CurrenciesTableViewController
@@ -24,11 +27,17 @@
     NSPredicate *predicate = nil;
     if ([prefix isVisible]) {
         predicate =
-        [NSPredicate predicateWithFormat:@"code beginswith %@", prefix];
+        [NSPredicate predicateWithFormat:@"code beginswith[c] %@ OR name contains[c] %@", prefix, prefix];
     }
     return predicate;
 }
 
+#pragma mark - Setup
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.searchBar becomeFirstResponder];
+}
+#pragma mark - Refreshing
 - (void)refresh:(id)sender {
     [sender endRefreshing];
 //    [[HBTAPIClient sharedAPIClient] allCurrenciesWithSuccessBlock:^(id responseObject) {
@@ -64,9 +73,12 @@
     NSError *error;
     
     [[self.fetchedResultsController fetchRequest] setPredicate:[self searchPredicateWithPrefix:searchText]];
-    [NSFetchedResultsController deleteCacheWithName:@"Root"];
     [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    [self.tableView scrollsToTop];
 }
 
 #pragma mark - Table view data source
@@ -76,8 +88,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CurrenciesCell" forIndexPath:indexPath];
     Currency * currency =
     [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = currency.code;
-    // Configure the cell...
+    cell.textLabel.text = currency.label;
     
     return cell;
 }
@@ -88,39 +99,9 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+#pragma mark - Scroll view delegate
+- (void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [self.searchBar resignFirstResponder];
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 
 @end

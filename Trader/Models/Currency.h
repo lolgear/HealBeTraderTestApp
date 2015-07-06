@@ -16,6 +16,9 @@
 @property (nonatomic, retain) NSString * code;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *currencies;
+
+@property (nonatomic, readonly) NSString * label;
+
 @end
 
 @interface Currency (CoreDataGeneratedAccessors)

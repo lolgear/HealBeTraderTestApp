@@ -21,19 +21,19 @@ NSString * destinationTypeTo = @"destinationTypeTo";
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (weak, nonatomic) IBOutlet UIButton *fromCurrencyCodeButton;
 @property (weak, nonatomic) IBOutlet UIButton *toCurrencyCodeButton;
-@property (assign, nonatomic) BOOL isPairExist;
+@property (assign, nonatomic) BOOL saveAvailable;
 
 @end
 
 @implementation AddConversionViewController
 
 #pragma mark - Getters
+- (NSString *) saveErrors {
+    return [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] ? @"pair already exists" : @"currency not chosen";
+}
 
 - (void) updateSave {
-    if ([self.fromCurrencyCode isVisible] && [self.toCurrencyCode isVisible]) {
-        self.isPairExist =
-        [HBTDatabaseManager conversionBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
-    }
+    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && [HBTDatabaseManager conversionBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
 }
 
 - (void) setCurrencyCode:(NSString *)code forDesination:(NSString *)destination {
@@ -71,6 +71,11 @@ NSString * destinationTypeTo = @"destinationTypeTo";
     [self setupElements];
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self hideNotifications];
+}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -99,8 +104,8 @@ NSString * destinationTypeTo = @"destinationTypeTo";
 #pragma mark - Actions
 - (IBAction)saveButtonPressed:(id)sender {
     // we should save this conversion somewhere
-    if (self.isPairExist) {
-        [self showNotificationError:@"Already exists!"];
+    if (!self.saveAvailable) {
+        [self showNotificationError:[self saveErrors]];
         return;
     }
     NSNumber *timestamp = @([[NSDate date] timeIntervalSince1970]);
