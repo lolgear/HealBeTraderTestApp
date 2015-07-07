@@ -10,6 +10,7 @@
 
 @interface BaseTableViewController ()
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @end
 
 @implementation BaseTableViewController
@@ -22,9 +23,12 @@
 
 #pragma mark - Setup
 - (void)setupUIElements {
-    UIRefreshControl * refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.view addSubview:refreshControl];
+    if (!self.refreshControl) {
+        UIRefreshControl * refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        [self.view addSubview:refreshControl];
+        self.refreshControl = refreshControl;
+    }
 }
 
 #pragma mark - Refresh

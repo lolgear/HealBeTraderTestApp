@@ -33,7 +33,7 @@ NSString * destinationTypeTo = @"destinationTypeTo";
 }
 
 - (void) updateSave {
-    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && ![HBTDatabaseManager conversionBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
+    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && ![Conversion findBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
 }
 
 - (void) setCurrencyCode:(NSString *)code forDesination:(NSString *)destination {
@@ -116,7 +116,7 @@ NSString * destinationTypeTo = @"destinationTypeTo";
                                  @"timestamp" : timestamp,
                                  @"added_at" : timestamp
                                  };
-    [HBTDatabaseManager saveConversion:dictionary completion:^(BOOL contextDidSave, NSError *error) {
+    [Conversion saveWithDictionary:dictionary completion:^(BOOL contextDidSave, NSError *error) {
         if (error) {
             [self showNotificationError:error.localizedDescription];
         }

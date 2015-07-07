@@ -16,7 +16,7 @@
 static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 @interface RatesTableViewController ()<NSFetchedResultsControllerDelegate>
-@property (strong, nonatomic) NSFetchedResultsController * fetchedResultsController;
+
 @end
 
 @implementation RatesTableViewController
@@ -34,15 +34,30 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 #pragma mark - Refresh
 - (void)refresh:(id)sender {
     // update data here
+    UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+    CGRect rect = progressView.frame;
+    rect.size.width = self.view.frame.size.width;
+    progressView.frame = rect;
+    [self.view addSubview:progressView];
     DDLogDebug(@"%@",[Conversion sourcesAndTargets]);
-    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
+    [HBTDatabaseManager loadConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+        CGFloat progress = ((numberOfFinishedOperations + 1) * 1.0f) / totalNumberOfOperations;
+        DDLogDebug(@"totalNumberOfOperations: %@", @(totalNumberOfOperations) );
+        DDLogDebug(@"I have items: %@", @(progress));
+        [progressView setProgress:progress animated:YES];
+    } withCompletion:^(BOOL contextDidSave, NSError *error) {
+
         if (!error) {
         }
         else {
             [self showNotificationError:error.localizedDescription];
         }
+        [progressView removeFromSuperview];
         [sender endRefreshing];
     }];
+//    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
+
+//    }];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -79,7 +94,7 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
         // Delete the row from the data source
         Conversion *conversion =
         [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [HBTDatabaseManager deleteConversion:conversion completion:^(BOOL contextDidSave, NSError *error) {
+        [Conversion remove:conversion completion:^(BOOL contextDidSave, NSError *error) {
             if (!error) {
             }
             else {
