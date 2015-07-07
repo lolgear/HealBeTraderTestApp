@@ -30,7 +30,8 @@ static NSString *currenciesEndpointName = @"currencies.json";
 static NSString *liveEndpointName = @"live";
 static NSString *historicalEndpointName = @"historical";
 static NSString *apiPathNameHistorical = @"historical";
-static NSString *apiKey = @"f8a9b90bc6525a28e131b47630a60abc";
+static NSString *apiKey = @"791cfed4992935eae19dacb8e4945f6a";//@"f8a9b90bc6525a28e131b47630a60abc";
+// 791cfed4992935eae19dacb8e4945f6a
 
 @interface HBTAPIClient ()
 
@@ -181,6 +182,9 @@ static NSString *apiKey = @"f8a9b90bc6525a28e131b47630a60abc";
 
 #pragma mark - Operations
 
+- (void)liveRatesWithSuccessBlock:(HBTAPIClientSuccessBlock)successBlock errorBlock:(HBTAPIClientErrorBlock)errorBlock {
+    [self liveRatesForSource:nil withCurrencies:nil successBlock:successBlock errorBlock:errorBlock];
+}
 
 // Endpoint : {Live}
 // Params : {
@@ -195,8 +199,13 @@ static NSString *apiKey = @"f8a9b90bc6525a28e131b47630a60abc";
                 errorBlock:(HBTAPIClientErrorBlock)errorBlock {
     NSMutableDictionary *params = [self commonParametersDictionary];
 
-    params[sourceParameterName] = sourceCurrency;
-    params[currenciesParameterName] = [currencies componentsJoinedByString:@","];
+    if ([sourceCurrency isVisible]) {
+        params[sourceParameterName] = sourceCurrency;
+    }
+    
+    if (currencies) {
+        params[currenciesParameterName] = [currencies componentsJoinedByString:@","];
+    }
 
     [self commonHttpOperationWithType:HTTPOperationTypeGET withPath:liveEndpointName withParameters:params authorized:NO apiManager:[self apilayerManager] successBlock:successBlock errorBlock:errorBlock];
 }

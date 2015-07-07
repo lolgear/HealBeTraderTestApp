@@ -23,6 +23,9 @@ typedef void (^HBTAPIClientErrorBlock)(NSError *error, NSString *errorDescriptio
 + (instancetype)sharedAPIClient;
 
 
+- (void)liveRatesWithSuccessBlock:(HBTAPIClientSuccessBlock)successBlock
+                        errorBlock:(HBTAPIClientErrorBlock)errorBlock;
+
 - (void)liveRatesForSource:(NSString *)sourceCurrency
             withCurrencies:(NSArray *)currencies
               successBlock:(HBTAPIClientSuccessBlock)successBlock

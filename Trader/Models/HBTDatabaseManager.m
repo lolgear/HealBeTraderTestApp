@@ -32,18 +32,47 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
     
     currency = [Currency MR_createEntityInContext:context];
     currency.code = code;
-    currency.name = name;
+
+    if ([name isNotNull]) {
+        currency.name = name;
+    }
 }
 
 + (void)loadCurrencies:(MRSaveCompletionHandler)completion {
     // load currencies from file and put them into db.
     // I want like this, ok :3
-    NSDictionary *currenciesDictionary = [JSONFileReader currenciesDictionary];
-    NSArray *currencies =
-    [[currenciesDictionary allKeys] mapObjectsUsingBlock:^NSDictionary *(NSString *obj, NSUInteger idx) {
-        return @{@"code" : obj, @"name" : currenciesDictionary[obj]};
+    [[HBTAPIClient sharedAPIClient] liveRatesWithSuccessBlock:^(id responseObject) {
+        if (responseObject[@"error"]) {
+            if (completion) {
+                NSError *error = [NSError errorWithDomain:@"com.trader.network" code:42 userInfo:nil];
+                completion(NO, error);
+            }
+        }
+        else {
+            NSDictionary *responseDictionary = (NSDictionary *)responseObject;
+            
+            NSString *source = responseDictionary[@"source"];
+            NSString *pattern = [@"^" stringByAppendingString:source];
+            NSArray *currencies =
+            [[(NSDictionary *)responseDictionary[@"quotes"] allKeys] compactObjectsUsingBlock:^NSDictionary *(NSString *obj, NSUInteger idx) {
+                NSString *result =
+                [obj stringByReplacingOccurrencesOfStringPattern:pattern withString:@""];
+                return @{@"code":result, @"name":result};
+            }];
+            [self saveCurrencies:currencies completion:completion];
+        }
+    } errorBlock:^(NSError *error, NSString *errorDescription) {
+        DDLogError(@"error is %@", error);
+        if (completion) {
+            completion(NO, error);
+        }
     }];
-    [self saveCurrencies:currencies completion:completion];
+//    NSDictionary *currenciesDictionary = [JSONFileReader currenciesDictionary];
+//    NSArray *currencies =
+//    [[currenciesDictionary allKeys] mapObjectsUsingBlock:^NSDictionary *(NSString *obj, NSUInteger idx) {
+//        return @{@"code" : obj, @"name" : currenciesDictionary[obj]};
+//    }];
+//    [self saveCurrencies:currencies completion:completion];
 }
 
 + (void)saveCurrency:(NSDictionary *)currencyDictionary completion:(MRSaveCompletionHandler)completion {
