@@ -19,17 +19,44 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 @implementation AppDelegate
 
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+- (void) setupLoggers {
     [DDLog addLogger:[DDASLLogger sharedInstance]];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
+}
 
+- (void) setupBackgroundFetch {
+    [[UIApplication sharedApplication]
+     setMinimumBackgroundFetchInterval:
+     // put any time interval, heh
+     UIApplicationBackgroundFetchIntervalMinimum];
+}
+
+- (void) setupDatabase {
     [MagicalRecord setupAutoMigratingCoreDataStack];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self setupLoggers];
+    [self setupDatabase];
+    [self setupBackgroundFetch];
+    // Override point for customization after application launch.
     [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
         if (error) {
             // do something
             DDLogDebug(@"error: %@", error);
+        }
+        else {
+//            [HBTDatabaseManager loadFirstTimeConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+//                DDLogDebug(@"%@ load %@ / %@", self, @(numberOfFinishedOperations), @(totalNumberOfOperations));
+//            } withCompletion:^(BOOL contextDidSave, NSError *error) {
+//                if (!error) {
+//                    // ok
+//                    DDLogDebug(@"save first time conversions well: %@", self);
+//                }
+//                else {
+//                    DDLogDebug(@"%@ has error: %@", self, error);
+//                }
+//            }];
         }
     }];
     return YES;
@@ -37,12 +64,12 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     
-    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
-        
-        UIBackgroundFetchResult fetchResult = error == nil ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed;
-        DDLogDebug(@"fetchedResult: %@", @(fetchResult) );
-        completionHandler(fetchResult);
-    }];
+//    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
+//        
+//        UIBackgroundFetchResult fetchResult = error == nil ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed;
+//        DDLogDebug(@"fetchedResult: %@", @(fetchResult) );
+//        completionHandler(fetchResult);
+//    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
