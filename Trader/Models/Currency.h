@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <MagicalRecord/MagicalRecord.h>
 
 @class Conversion;
 
@@ -18,6 +19,16 @@
 @property (nonatomic, retain) NSSet *currencies;
 
 @property (nonatomic, readonly) NSString * label;
+
+#pragma mark - Helpers 
+#pragma mark - Helpers / Create
++ (void)findOrCreateWithDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)context;
+
+#pragma mark - Helpers / Save
++ (void)saveWithDictionary:(NSDictionary *)dictionary completion:(MRSaveCompletionHandler)completion;
+
++ (void)saveAllFromDictionaries:(NSArray *)dictionaries completion:(MRSaveCompletionHandler)completion;
+
 
 @end
 

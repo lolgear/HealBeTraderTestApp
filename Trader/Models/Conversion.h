@@ -27,4 +27,22 @@
 + (NSArray *)distinctSources;
 + (NSArray *)sourcesAndTargets;
 
+#pragma mark - Helpers
+
+#pragma mark - Helpers / Find
++ (instancetype)findBySource:(NSString *)source andTarget:(NSString *)target;
+
+#pragma mark - Helpers / Create
++ (void) createWithDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)context;
+
+#pragma mark - Helpers / Save
++ (void) saveWithDictionary:(NSDictionary *)dictionary completion:(MRSaveCompletionHandler)completion;
+
++ (void) saveAllFromDictionaries:(NSArray *)dictionaries completion:(MRSaveCompletionHandler)completion;
+
+#pragma mark - Helpers / Delete
++ (void) remove:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion;
+
++ (void) removeAllOld:(NSInteger)timestamp completion:(MRSaveCompletionHandler)completion;
+
 @end

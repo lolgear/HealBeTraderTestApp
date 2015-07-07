@@ -12,8 +12,10 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="currencies" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Conversion" inverseName="source" inverseEntity="Conversion" syncable="YES"/>
     </entity>
+    <entity name="FirstTimeConversion" representedClassName="FirstTimeConversion" parentEntity="Conversion" syncable="YES"/>
     <elements>
         <element name="Conversion" positionX="-54" positionY="9" width="128" height="120"/>
         <element name="Currency" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="FirstTimeConversion" positionX="-36" positionY="72" width="128" height="45"/>
     </elements>
 </model>

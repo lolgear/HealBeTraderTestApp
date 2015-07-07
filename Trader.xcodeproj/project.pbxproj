@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040B0A091B4BD5CC00D2EF89 /* Trader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 040B0A071B4BD5CC00D2EF89 /* Trader.xcdatamodeld */; };
+		040B0A0C1B4BD80600D2EF89 /* FirstTimeConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */; };
 		044D28E11B47DD4B0054BAD4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28E01B47DD4B0054BAD4 /* main.m */; };
 		044D28E41B47DD4B0054BAD4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28E31B47DD4B0054BAD4 /* AppDelegate.m */; };
 		044D28FE1B47DD4B0054BAD4 /* TraderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28FD1B47DD4B0054BAD4 /* TraderTests.m */; };
-		044D29431B47E05C0054BAD4 /* Trader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 044D29081B47E05C0054BAD4 /* Trader.xcdatamodeld */; };
 		044D29441B47E05C0054BAD4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 044D290C1B47E05C0054BAD4 /* Images.xcassets */; };
 		044D29451B47E05C0054BAD4 /* Interfaces.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 044D290D1B47E05C0054BAD4 /* Interfaces.xcassets */; };
 		044D29471B47E05C0054BAD4 /* localization.json in Resources */ = {isa = PBXBuildFile; fileRef = 044D29101B47E05C0054BAD4 /* localization.json */; };
@@ -58,6 +59,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		040B0A081B4BD5CC00D2EF89 /* Trader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Trader.xcdatamodel; sourceTree = "<group>"; };
+		040B0A0A1B4BD80600D2EF89 /* FirstTimeConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstTimeConversion.h; sourceTree = "<group>"; };
+		040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstTimeConversion.m; sourceTree = "<group>"; };
 		044D28DB1B47DD4B0054BAD4 /* Trader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		044D28DF1B47DD4B0054BAD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		044D28E01B47DD4B0054BAD4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -66,7 +70,6 @@
 		044D28F71B47DD4B0054BAD4 /* TraderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TraderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		044D28FC1B47DD4B0054BAD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		044D28FD1B47DD4B0054BAD4 /* TraderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TraderTests.m; sourceTree = "<group>"; };
-		044D29091B47E05C0054BAD4 /* Trader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Trader.xcdatamodel; sourceTree = "<group>"; };
 		044D290C1B47E05C0054BAD4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		044D290D1B47E05C0054BAD4 /* Interfaces.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Interfaces.xcassets; sourceTree = "<group>"; };
 		044D29101B47E05C0054BAD4 /* localization.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = localization.json; sourceTree = "<group>"; };
@@ -220,11 +223,13 @@
 		044D29071B47E05C0054BAD4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				040B0A071B4BD5CC00D2EF89 /* Trader.xcdatamodeld */,
 				044D29891B4963430054BAD4 /* Currency.h */,
 				044D298A1B4963430054BAD4 /* Currency.m */,
 				044D298B1B4963430054BAD4 /* Conversion.h */,
 				044D298C1B4963430054BAD4 /* Conversion.m */,
-				044D29081B47E05C0054BAD4 /* Trader.xcdatamodeld */,
+				040B0A0A1B4BD80600D2EF89 /* FirstTimeConversion.h */,
+				040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */,
 				044D29721B4864EC0054BAD4 /* HBTDatabaseManager.h */,
 				044D29731B4864EC0054BAD4 /* HBTDatabaseManager.m */,
 			);
@@ -540,7 +545,9 @@
 				044D297A1B4867D50054BAD4 /* BaseTableViewController.m in Sources */,
 				044D29771B4867BA0054BAD4 /* CurrenciesTableViewController.m in Sources */,
 				044D298E1B4963430054BAD4 /* Conversion.m in Sources */,
+				040B0A0C1B4BD80600D2EF89 /* FirstTimeConversion.m in Sources */,
 				044D29571B47E05C0054BAD4 /* UICollectionViewCell+ExtendedMethods.m in Sources */,
+				040B0A091B4BD5CC00D2EF89 /* Trader.xcdatamodeld in Sources */,
 				044D29531B47E05C0054BAD4 /* UIColor+Resources.m in Sources */,
 				044D294A1B47E05C0054BAD4 /* NSArray+ExtendedMethods.m in Sources */,
 				044D28E41B47DD4B0054BAD4 /* AppDelegate.m in Sources */,
@@ -559,7 +566,6 @@
 				044D29551B47E05C0054BAD4 /* UIImage+Resources.m in Sources */,
 				044D294F1B47E05C0054BAD4 /* AIKCustomStoryboardAccessor.m in Sources */,
 				044D29581B47E05C0054BAD4 /* UIImageEffects.m in Sources */,
-				044D29431B47E05C0054BAD4 /* Trader.xcdatamodeld in Sources */,
 				044D294B1B47E05C0054BAD4 /* NSData+ExtendedMethods.m in Sources */,
 				044D29561B47E05C0054BAD4 /* UIButton+ExtendedMethods.m in Sources */,
 			);
@@ -783,12 +789,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		044D29081B47E05C0054BAD4 /* Trader.xcdatamodeld */ = {
+		040B0A071B4BD5CC00D2EF89 /* Trader.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				044D29091B47E05C0054BAD4 /* Trader.xcdatamodel */,
+				040B0A081B4BD5CC00D2EF89 /* Trader.xcdatamodel */,
 			);
-			currentVersion = 044D29091B47E05C0054BAD4 /* Trader.xcdatamodel */;
+			currentVersion = 040B0A081B4BD5CC00D2EF89 /* Trader.xcdatamodel */;
 			path = Trader.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
