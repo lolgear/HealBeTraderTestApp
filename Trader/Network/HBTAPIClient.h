@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AFNetworking/AFNetworking.h>
 
 extern NSString *HTTPOperationTypeGET;
 extern NSString *HTTPOperationTypePOST;
@@ -22,9 +23,11 @@ typedef void (^HBTAPIClientErrorBlock)(NSError *error, NSString *errorDescriptio
 
 + (instancetype)sharedAPIClient;
 
+- (AFURLConnectionOperation *)liveOperationForSource:(NSString *)sourceCurrency
+                                      withCurrencies:(NSArray *)currencies;
 
 - (void)liveRatesWithSuccessBlock:(HBTAPIClientSuccessBlock)successBlock
-                        errorBlock:(HBTAPIClientErrorBlock)errorBlock;
+                       errorBlock:(HBTAPIClientErrorBlock)errorBlock;
 
 - (void)liveRatesForSource:(NSString *)sourceCurrency
             withCurrencies:(NSArray *)currencies

@@ -155,7 +155,6 @@ static NSString *apiKey = @"791cfed4992935eae19dacb8e4945f6a";//@"f8a9b90bc6525a
                                         };
 
     DDLogDebug(@"I will perform operation: %@", operationInfoHash);
-
     if ([type isEqualToString:HTTPOperationTypeGET]) {
         [manager GET:path parameters:parameters success:responseSuccessBlock failure:responseErrorBlock];
     } else if ([type isEqualToString:HTTPOperationTypePOST]) {
@@ -180,11 +179,41 @@ static NSString *apiKey = @"791cfed4992935eae19dacb8e4945f6a";//@"f8a9b90bc6525a
     return [self.dateFormatter stringFromDate:date];
 }
 
-#pragma mark - Operations
+- (AFURLConnectionOperation *)urlConnectionOperationWithType:(NSString *)type
+                              withPath:(NSString *)path
+                        withParameters:(NSDictionary *)initialParameters
+                            authorized:(BOOL)authorizedOperation
+                            apiManager:(AFHTTPSessionManager *)manager {
+    NSMutableDictionary *parameters = [initialParameters mutableCopy];
+    
+    if (!parameters) {
+        parameters = [NSMutableDictionary dictionary];
+    }
 
-- (void)liveRatesWithSuccessBlock:(HBTAPIClientSuccessBlock)successBlock errorBlock:(HBTAPIClientErrorBlock)errorBlock {
-    [self liveRatesForSource:nil withCurrencies:nil successBlock:successBlock errorBlock:errorBlock];
+    NSDictionary *operationInfoHash = @{
+                                        @"type" : type,
+                                        @"path" : path,
+                                        @"parameters" : parameters,
+                                        @"headers" : [manager.requestSerializer valueForKey:@"mutableHTTPRequestHeaders"]
+                                        };
+    DDLogDebug(@"%@ this is operation: %@", self, operationInfoHash);
+    NSString *parametersString = [NSString stringFromURLParamsDictionary:parameters];
+    
+    NSURL *fullPathURL = [manager.baseURL URLByAppendingPathComponent:path];
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:[fullPathURL absoluteString]];
+    
+    [components setQuery:parametersString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[components URL]];
+
+    DDLogDebug(@"%@ I have request url: %@", self, request.URL.absoluteString);
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.responseSerializer = [AFJSONResponseSerializer serializer];
+    return operation;
 }
+
+#pragma mark - Operations
 
 // Endpoint : {Live}
 // Params : {
@@ -193,6 +222,24 @@ static NSString *apiKey = @"791cfed4992935eae19dacb8e4945f6a";//@"f8a9b90bc6525a
 //    "currencies" : "USD,AUD,CAD,PLN,MXN"
 //    "format" : 1
 // }
+- (AFURLConnectionOperation *)liveOperationForSource:(NSString *)sourceCurrency
+                                      withCurrencies:(NSArray *)currencies {
+    NSMutableDictionary *params = [self commonParametersDictionary];
+    if ([sourceCurrency isVisible]) {
+        params[sourceParameterName] = sourceCurrency;
+    }
+    
+    if (currencies) {
+        params[currenciesParameterName] = [currencies componentsJoinedByString:@","];
+    }
+    
+    return [self urlConnectionOperationWithType:HTTPOperationTypeGET withPath:liveEndpointName withParameters:params authorized:NO apiManager:[self apilayerManager]];
+}
+
+- (void)liveRatesWithSuccessBlock:(HBTAPIClientSuccessBlock)successBlock errorBlock:(HBTAPIClientErrorBlock)errorBlock {
+    [self liveRatesForSource:nil withCurrencies:nil successBlock:successBlock errorBlock:errorBlock];
+}
+
 - (void)liveRatesForSource:(NSString *)sourceCurrency
             withCurrencies:(NSArray *)currencies
               successBlock:(HBTAPIClientSuccessBlock)successBlock
