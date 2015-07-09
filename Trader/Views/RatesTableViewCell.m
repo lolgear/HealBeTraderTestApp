@@ -7,6 +7,8 @@
 //
 
 #import "RatesTableViewCell.h"
+#import "NSNumberFormatter+CustomFormatting.h"
+#import "NSString+CustomFormatting.h"
 
 @interface RatesTableViewCell ()
 
@@ -24,12 +26,6 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
-}
-
-- (NSAttributedString *) trendLabelTextWithTrend:(NSString *)trend andQuote:(NSString *)quote {
-    NSString *string =
-    [[quote stringByAppendingString:@" "] stringByAppendingString:trend];
-    return [[NSAttributedString alloc] initWithString:string];
 }
 
 - (NSAttributedString *) stringFromTrend:(NSNumber *)trend {
@@ -71,17 +67,11 @@
 //        trendPrefix = @"=";
 //    }
     
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.zeroSymbol = @"0";
-    formatter.decimalSeparator = @".";
-    formatter.maximumFractionDigits = 2;
-    formatter.minimumFractionDigits = 2;
-    formatter.positivePrefix = @"+";
-    formatter.negativePrefix = @"-";
-    NSString *trendString = [formatter stringFromNumber:trend];
-    NSString *quoteString = [formatter stringFromNumber:quote];
+    NSString *trendString = [[NSNumberFormatter trendFormatter] stringFromNumber:trend];
+    NSString *quoteString = [[NSNumberFormatter quoteFormatter] stringFromNumber:quote];
     
-    self.trendLabel.attributedText = [self trendLabelTextWithTrend:trendString andQuote:quoteString];
+    // color if needed
+    self.trendLabel.text = [NSString labelTextWithTrend:trendString andQuote:quoteString];
 }
 
 @end

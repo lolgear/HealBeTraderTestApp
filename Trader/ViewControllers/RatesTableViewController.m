@@ -59,6 +59,12 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 }
 
 #pragma mark - Progress Hud
+
+- (void) showProgressHudInCenter {
+    [self showProgressHud];
+    self.progressHud.yOffset = (-1) * (self.navigationController.navigationBar.frame.size.height + + 20);
+}
+
 - (void) updateHudProgress:(CGFloat)progress {
     self.progressHud.progress = progress;
 }
@@ -78,7 +84,7 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 - (void) checkDatabaseConsistenty {
     [self updateActions];
     if (![[DatabaseValidation sharedStorage] firstTimeLoaded]) {
-        [self showProgressHud];
+        [self showProgressHudInCenter];
         [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
             if (error) {
                 [self showNotificationError:error.localizedDescription];
@@ -118,18 +124,16 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 #pragma mark - Refresh
 - (void)refresh:(id)sender {
-    if (!self.actionsAvailable) {
-        [sender endRefreshing];
-        return;
-    }
+//    if (!self.actionsAvailable) {
+//        [sender endRefreshing];
+//        return;
+//    }
     // update data here
-    [self showProgressHud];
+    [self showProgressHudInCenter];
     self.progressHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
     DDLogDebug(@"%@",[Conversion sourcesAndTargets]);
     [HBTDatabaseManager loadFavoritedConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
         CGFloat progress = ((numberOfFinishedOperations) * 1.0f) / totalNumberOfOperations;
-        DDLogDebug(@"totalNumberOfOperations: %@", @(totalNumberOfOperations) );
-        DDLogDebug(@"I have items: %@", @(progress));
         [self updateHudProgress:progress];
     } withCompletion:^(BOOL contextDidSave, NSError *error) {
         if (!error) {
