@@ -40,30 +40,48 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
     [self setupDatabase];
     [self setupBackgroundFetch];
     // Override point for customization after application launch.
-    [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
-        if (error) {
-            // do something
-            DDLogDebug(@"error: %@", error);
-        }
-        else {
-//            [HBTDatabaseManager loadFirstTimeConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
-//                DDLogDebug(@"%@ load %@ / %@", self, @(numberOfFinishedOperations), @(totalNumberOfOperations));
-//            } withCompletion:^(BOOL contextDidSave, NSError *error) {
-//                if (!error) {
-//                    // ok
-//                    DDLogDebug(@"save first time conversions well: %@", self);
-//                }
-//                else {
-//                    DDLogDebug(@"%@ has error: %@", self, error);
-//                }
-//            }];
-        }
-    }];
+//    [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
+//        if (error) {
+//            // do something
+//            DDLogDebug(@"error: %@", error);
+//        }
+//        else {
+////            [HBTDatabaseManager loadAllConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+////                DDLogDebug(@"%@ load %@ / %@", self, @(numberOfFinishedOperations), @(totalNumberOfOperations));
+////            } withCompletion:^(BOOL contextDidSave, NSError *error) {
+////                if (!error) {
+////                    // ok
+////                    DDLogDebug(@"save first time conversions well: %@", self);
+////                }
+////                else {
+////                    DDLogDebug(@"%@ has error: %@", self, error);
+////                }
+////            }];
+////            [HBTDatabaseManager loadFirstTimeConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+////                DDLogDebug(@"%@ load %@ / %@", self, @(numberOfFinishedOperations), @(totalNumberOfOperations));
+////            } withCompletion:^(BOOL contextDidSave, NSError *error) {
+////                if (!error) {
+////                    // ok
+////                    DDLogDebug(@"save first time conversions well: %@", self);
+////                }
+////                else {
+////                    DDLogDebug(@"%@ has error: %@", self, error);
+////                }
+////            }];
+//        }
+//    }];
     return YES;
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    
+
+    [HBTDatabaseManager loadFavoritedConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+        
+    } withCompletion:^(BOOL contextDidSave, NSError *error) {
+        UIBackgroundFetchResult fetchResult = error == nil ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed;
+        DDLogDebug(@"fetchedResult: %@", @(fetchResult) );
+        completionHandler(fetchResult);
+    }];
 //    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
 //        
 //        UIBackgroundFetchResult fetchResult = error == nil ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed;

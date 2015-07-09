@@ -14,9 +14,9 @@
 
 - (void)addCloseButton;
 
-- (void)showProgressView;
+- (void)showProgressHud;
 
-- (void)hideProgressView;
+- (void)hideProgressHud;
 
 - (void)showNotificationError:(NSString *)errorString;
 

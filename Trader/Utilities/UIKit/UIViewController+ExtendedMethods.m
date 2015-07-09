@@ -20,11 +20,11 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)showProgressView {
+- (void)showProgressHud {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 }
 
-- (void)hideProgressView {
+- (void)hideProgressHud {
     [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
 }
 
