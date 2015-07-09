@@ -33,11 +33,6 @@
     }
 }
 
-- (void) setFavoritedByValue:(NSNumber *)favorited {
-    self.added_at = [favorited boolValue] ? @([[NSDate date] timeIntervalSince1970]) : nil;
-    self.favorited = favorited;
-}
-
 - (NSNumber *)trend {
     return @(self.quote ? self.quote.floatValue - self.first_time_quote.floatValue : self.first_time_quote.floatValue);
 }
@@ -79,15 +74,11 @@
 //    NSString *target = dictionary[@"target"];
     NSNumber *timestamp = dictionary[@"timestamp"];
     NSNumber *quote = dictionary[@"quote"];
-    NSNumber *favorited = dictionary[@"favorited"];
 //    Currency *sourceCurrency = [Currency MR_findFirstByAttribute:@"code" withValue:source inContext:context];
 //    Currency *targetCurrency = [Currency MR_findFirstByAttribute:@"code" withValue:target inContext:context];
     Conversion *conversion = self;
     [conversion setQuoteByValue:quote];
     [conversion setTimestampByValue:timestamp];
-    if (favorited) {
-        [conversion setFavoritedByValue:favorited];
-    }
 }
 
 #pragma mark - Helpers / Find
@@ -146,18 +137,6 @@
     } completion:completion];
 }
 
-
-#pragma mark - Helpers / Delete
-+ (void) like:(Conversion *)conversion withValue:(BOOL)favorited completion:(MRSaveCompletionHandler)completion {
-    [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-        [conversion setFavoritedByValue:@(favorited)];
-    } completion:completion];
-}
-
-+ (void) unlike:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion {
-    [self like:conversion withValue:NO completion:completion];
-}
-
 + (void) remove:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
         [conversion MR_deleteEntityInContext:localContext];
@@ -176,5 +155,24 @@
     } completion:completion];
 }
 
+@end
+
+@implementation Conversion (UserInteraction)
+
+- (void) setFavoritedByValue:(NSNumber *)favorited {
+    self.added_at = [favorited boolValue] ? @([[NSDate date] timeIntervalSince1970]) : nil;
+    self.favorited = favorited;
+}
+
+#pragma mark - Helpers / Delete
++ (void) like:(Conversion *)conversion withValue:(BOOL)favorited completion:(MRSaveCompletionHandler)completion {
+    [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
+        [conversion setFavoritedByValue:@(favorited)];
+    } completion:completion];
+}
+
++ (void) unlike:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion {
+    [self like:conversion withValue:NO completion:completion];
+}
 
 @end

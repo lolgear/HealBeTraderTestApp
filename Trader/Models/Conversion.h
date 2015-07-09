@@ -24,7 +24,6 @@
 
 - (void) setTimestampByValue:(NSNumber *)timestamp;
 - (void) setQuoteByValue:(NSNumber *)value;
-- (void) setFavoritedByValue:(NSNumber *)favorited;
 @property (nonatomic, readonly) NSNumber *trend;
 @property (nonatomic, readonly) NSString *label;
 
@@ -48,15 +47,21 @@
 
 + (void) saveAllFromDictionaries:(NSArray *)dictionaries completion:(MRSaveCompletionHandler)completion;
 
-#pragma mark - Helpers / Favorited
-+ (void) like:(Conversion *)conversion withValue:(BOOL)favorited completion:(MRSaveCompletionHandler)completion;
-+ (void) unlike:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion;
-
 #pragma mark - Helpers / Delete
 + (void) remove:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion;
 
 + (void) remove:(Conversion *)conversion inContext:(NSManagedObjectContext *)context;
 
 + (void) removeAllOld:(NSInteger)timestamp completion:(MRSaveCompletionHandler)completion;
+
+@end
+
+@interface Conversion (UserInteraction)
+
+- (void) setFavoritedByValue:(NSNumber *)favorited;
+
+#pragma mark - Helpers / Favorited
++ (void) like:(Conversion *)conversion withValue:(BOOL)favorited completion:(MRSaveCompletionHandler)completion;
++ (void) unlike:(Conversion *)conversion completion:(MRSaveCompletionHandler)completion;
 
 @end
