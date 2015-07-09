@@ -2,6 +2,8 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Conversion" representedClassName="Conversion" syncable="YES">
         <attribute name="added_at" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="favorited" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="first_time_quote" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="quote" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="source" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Currency" inverseName="currencies" inverseEntity="Currency" syncable="YES"/>
@@ -12,10 +14,8 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="currencies" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Conversion" inverseName="source" inverseEntity="Conversion" syncable="YES"/>
     </entity>
-    <entity name="FirstTimeConversion" representedClassName="FirstTimeConversion" parentEntity="Conversion" syncable="YES"/>
     <elements>
-        <element name="Conversion" positionX="-54" positionY="9" width="128" height="120"/>
+        <element name="Conversion" positionX="-54" positionY="9" width="128" height="150"/>
         <element name="Currency" positionX="-63" positionY="-18" width="128" height="90"/>
-        <element name="FirstTimeConversion" positionX="-36" positionY="72" width="128" height="45"/>
     </elements>
 </model>

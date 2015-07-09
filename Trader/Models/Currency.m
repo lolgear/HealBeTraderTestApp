@@ -17,8 +17,7 @@
 @dynamic currencies;
 
 - (NSString *)label {
-    return
-    self.code;
+    return self.code;
 }
 
 

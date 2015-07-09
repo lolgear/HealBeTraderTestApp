@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		040B0A091B4BD5CC00D2EF89 /* Trader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 040B0A071B4BD5CC00D2EF89 /* Trader.xcdatamodeld */; };
-		040B0A0C1B4BD80600D2EF89 /* FirstTimeConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */; };
 		044D28E11B47DD4B0054BAD4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28E01B47DD4B0054BAD4 /* main.m */; };
 		044D28E41B47DD4B0054BAD4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28E31B47DD4B0054BAD4 /* AppDelegate.m */; };
 		044D28FE1B47DD4B0054BAD4 /* TraderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D28FD1B47DD4B0054BAD4 /* TraderTests.m */; };
@@ -45,6 +44,7 @@
 		044D29881B4962060054BAD4 /* RatesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D29871B4962060054BAD4 /* RatesTableViewCell.m */; };
 		044D298D1B4963430054BAD4 /* Currency.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D298A1B4963430054BAD4 /* Currency.m */; };
 		044D298E1B4963430054BAD4 /* Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D298C1B4963430054BAD4 /* Conversion.m */; };
+		049E2DD01B4E8970007C59A9 /* DatabaseValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 049E2DCF1B4E8970007C59A9 /* DatabaseValidation.m */; };
 		0A0F0C1DEEB7CA5EB3D8DA5F /* libPods-Trader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46BE92E0C4840AB5B7B0124C /* libPods-Trader.a */; };
 /* End PBXBuildFile section */
 
@@ -60,8 +60,6 @@
 
 /* Begin PBXFileReference section */
 		040B0A081B4BD5CC00D2EF89 /* Trader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Trader.xcdatamodel; sourceTree = "<group>"; };
-		040B0A0A1B4BD80600D2EF89 /* FirstTimeConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstTimeConversion.h; sourceTree = "<group>"; };
-		040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstTimeConversion.m; sourceTree = "<group>"; };
 		044D28DB1B47DD4B0054BAD4 /* Trader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		044D28DF1B47DD4B0054BAD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		044D28E01B47DD4B0054BAD4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -134,6 +132,8 @@
 		044D298A1B4963430054BAD4 /* Currency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Currency.m; sourceTree = "<group>"; };
 		044D298B1B4963430054BAD4 /* Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Conversion.h; sourceTree = "<group>"; };
 		044D298C1B4963430054BAD4 /* Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Conversion.m; sourceTree = "<group>"; };
+		049E2DCE1B4E8970007C59A9 /* DatabaseValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseValidation.h; sourceTree = "<group>"; };
+		049E2DCF1B4E8970007C59A9 /* DatabaseValidation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseValidation.m; sourceTree = "<group>"; };
 		46BE92E0C4840AB5B7B0124C /* libPods-Trader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Trader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A36268B44487C8B9C2B511AC /* Pods-Trader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Trader/Pods-Trader.debug.xcconfig"; sourceTree = "<group>"; };
 		B1B25DC9257D19D82D285716 /* Pods-Trader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Trader/Pods-Trader.release.xcconfig"; sourceTree = "<group>"; };
@@ -228,8 +228,6 @@
 				044D298A1B4963430054BAD4 /* Currency.m */,
 				044D298B1B4963430054BAD4 /* Conversion.h */,
 				044D298C1B4963430054BAD4 /* Conversion.m */,
-				040B0A0A1B4BD80600D2EF89 /* FirstTimeConversion.h */,
-				040B0A0B1B4BD80600D2EF89 /* FirstTimeConversion.m */,
 				044D29721B4864EC0054BAD4 /* HBTDatabaseManager.h */,
 				044D29731B4864EC0054BAD4 /* HBTDatabaseManager.m */,
 			);
@@ -280,6 +278,7 @@
 		044D29161B47E05C0054BAD4 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				049E2DCD1B4E8970007C59A9 /* Validation */,
 				044D29171B47E05C0054BAD4 /* NSFoundation */,
 				044D29231B47E05C0054BAD4 /* ResourcesAccessors */,
 				044D29331B47E05C0054BAD4 /* UIKit */,
@@ -374,6 +373,15 @@
 				044D297C1B4878C00054BAD4 /* currencies.json */,
 			);
 			path = Jsons;
+			sourceTree = "<group>";
+		};
+		049E2DCD1B4E8970007C59A9 /* Validation */ = {
+			isa = PBXGroup;
+			children = (
+				049E2DCE1B4E8970007C59A9 /* DatabaseValidation.h */,
+				049E2DCF1B4E8970007C59A9 /* DatabaseValidation.m */,
+			);
+			path = Validation;
 			sourceTree = "<group>";
 		};
 		5ACA99EC58035206B95F3773 /* Pods */ = {
@@ -545,13 +553,13 @@
 				044D297A1B4867D50054BAD4 /* BaseTableViewController.m in Sources */,
 				044D29771B4867BA0054BAD4 /* CurrenciesTableViewController.m in Sources */,
 				044D298E1B4963430054BAD4 /* Conversion.m in Sources */,
-				040B0A0C1B4BD80600D2EF89 /* FirstTimeConversion.m in Sources */,
 				044D29571B47E05C0054BAD4 /* UICollectionViewCell+ExtendedMethods.m in Sources */,
 				040B0A091B4BD5CC00D2EF89 /* Trader.xcdatamodeld in Sources */,
 				044D29531B47E05C0054BAD4 /* UIColor+Resources.m in Sources */,
 				044D294A1B47E05C0054BAD4 /* NSArray+ExtendedMethods.m in Sources */,
 				044D28E41B47DD4B0054BAD4 /* AppDelegate.m in Sources */,
 				044D295A1B47E05C0054BAD4 /* UIViewController+ExtendedMethods.m in Sources */,
+				049E2DD01B4E8970007C59A9 /* DatabaseValidation.m in Sources */,
 				044D294D1B47E05C0054BAD4 /* NSObject+ExtendedMethods.m in Sources */,
 				044D298D1B4963430054BAD4 /* Currency.m in Sources */,
 				044D29801B4879450054BAD4 /* JSONFileReader.m in Sources */,
