@@ -33,7 +33,7 @@ NSString * destinationTypeTo = @"destinationTypeTo";
 }
 
 - (void) updateSave {
-    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && ![Conversion findBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
+    self.saveAvailable = [self.toCurrencyCode isVisible] && [self.fromCurrencyCode isVisible] && ![Conversion findBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode].favorited;
 }
 
 - (void) setCurrencyCode:(NSString *)code forDesination:(NSString *)destination {
@@ -108,15 +108,11 @@ NSString * destinationTypeTo = @"destinationTypeTo";
         [self showNotificationError:[self saveErrors]];
         return;
     }
-    NSNumber *timestamp = @([[NSDate date] timeIntervalSince1970]);
-    NSDictionary *dictionary = @{
-                                 @"source" : self.fromCurrencyCode,
-                                 @"target" : self.toCurrencyCode,
-                                 @"quote" : @(0),
-                                 @"timestamp" : timestamp,
-                                 @"added_at" : timestamp
-                                 };
-    [Conversion saveWithDictionary:dictionary completion:^(BOOL contextDidSave, NSError *error) {
+    
+    Conversion *conversion =
+    [Conversion findBySource:self.fromCurrencyCode andTarget:self.toCurrencyCode];
+    
+    [Conversion like:conversion withValue:@"YES" completion:^(BOOL contextDidSave, NSError *error) {
         if (error) {
             [self showNotificationError:error.localizedDescription];
         }

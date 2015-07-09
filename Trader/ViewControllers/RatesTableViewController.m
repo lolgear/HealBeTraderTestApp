@@ -7,19 +7,104 @@
 //
 
 #import "RatesTableViewController.h"
-#import <MagicalRecord/MagicalRecord.h>
-#import "HBTDatabaseManager.h"
+#import "RatesTableViewCell.h"
 #import "Conversion.h"
 #import "HBTAPIClient.h"
+#import "HBTDatabaseManager.h"
+#import "DatabaseValidation.h"
+#import <MagicalRecord/MagicalRecord.h>
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 @interface RatesTableViewController ()<NSFetchedResultsControllerDelegate>
-
+@property (strong, nonatomic) MBProgressHUD *progressHud;
+@property (strong, nonatomic) UIProgressView *progressView;
+@property (nonatomic, readonly) BOOL actionsAvailable;
 @end
 
 @implementation RatesTableViewController
+
+#pragma mark - Availability
+- (void) updateActions {
+    self.navigationItem.rightBarButtonItem.enabled = self.actionsAvailable;
+}
+- (BOOL) actionsAvailable {
+    return [[DatabaseValidation sharedStorage] firstTimeLoaded];
+}
+
+#pragma mark - Progress View
+- (UIProgressView *)progressView {
+    if (!_progressView) {
+        UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        CGRect rect = progressView.frame;
+        rect.size.width = self.view.frame.size.width;
+        progressView.frame = rect;
+        _progressView = progressView;
+    }
+    return _progressView;
+}
+
+- (void) showProgressView {
+    [self.view addSubview:self.progressView];
+}
+
+- (void) updateProgress:(CGFloat)progress {
+    self.progressView.progress = progress;
+}
+
+- (void) hideProgressView {
+    self.progressView.progress = 0.0f;
+    [self.progressView removeFromSuperview];
+}
+
+#pragma mark - Progress Hud
+- (void) updateHudProgress:(CGFloat)progress {
+    self.progressHud.progress = progress;
+}
+
+- (MBProgressHUD *)progressHud {
+    return [MBProgressHUD HUDForView:self.view];
+}
+
+#pragma mark - View Lifecycle
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [self checkDatabaseConsistenty];
+}
+
+#pragma mark - Data Consistenty
+- (void) checkDatabaseConsistenty {
+    [self updateActions];
+    if (![[DatabaseValidation sharedStorage] firstTimeLoaded]) {
+        [self showProgressHud];
+        [HBTDatabaseManager loadCurrencies:^(BOOL contextDidSave, NSError *error) {
+            if (error) {
+                [self showNotificationError:error.localizedDescription];
+                [self hideProgressHud];
+            }
+            else {
+                self.progressHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
+                [HBTDatabaseManager loadAllConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+                    CGFloat progress = numberOfFinishedOperations * 1.0f / totalNumberOfOperations;
+                    [self updateHudProgress:progress];
+                    
+                } withCompletion:^(BOOL contextDidSave, NSError *error) {
+                    if (!error) {
+                        [DatabaseValidation sharedStorage].firstTimeLoaded = YES;
+                        [self updateActions];
+                    }
+                    else {
+                        [self showNotificationError:error.localizedDescription];
+                    }
+                    
+                    [self hideProgressHud];
+                }];
+            }
+        }];
+    }
+}
 
 #pragma mark - Fetched Results Controller
 
@@ -28,36 +113,35 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController {
-    return [Conversion MR_fetchAllGroupedBy:nil withPredicate:nil sortedBy:@"added_at" ascending:YES];
+    return [Conversion fetchAllFavorited];
 }
 
 #pragma mark - Refresh
 - (void)refresh:(id)sender {
+    if (!self.actionsAvailable) {
+        [sender endRefreshing];
+        return;
+    }
     // update data here
-    UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-    CGRect rect = progressView.frame;
-    rect.size.width = self.view.frame.size.width;
-    progressView.frame = rect;
-    [self.view addSubview:progressView];
+    [self showProgressHud];
+    self.progressHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
     DDLogDebug(@"%@",[Conversion sourcesAndTargets]);
-    [HBTDatabaseManager loadConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
-        CGFloat progress = ((numberOfFinishedOperations + 1) * 1.0f) / totalNumberOfOperations;
+    [HBTDatabaseManager loadFavoritedConversionsWithProgressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+        CGFloat progress = ((numberOfFinishedOperations) * 1.0f) / totalNumberOfOperations;
         DDLogDebug(@"totalNumberOfOperations: %@", @(totalNumberOfOperations) );
         DDLogDebug(@"I have items: %@", @(progress));
-        [progressView setProgress:progress animated:YES];
+        [self updateHudProgress:progress];
     } withCompletion:^(BOOL contextDidSave, NSError *error) {
-
         if (!error) {
         }
         else {
+
             [self showNotificationError:error.localizedDescription];
         }
-        [progressView removeFromSuperview];
+        
+        [self hideProgressHud];
         [sender endRefreshing];
     }];
-//    [HBTDatabaseManager loadConversions:^(BOOL contextDidSave, NSError *error) {
-
-//    }];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -69,12 +153,13 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RatesCell" forIndexPath:indexPath];
+//    UITableViewCell *cell = [[UITableViewCell alloc] init];
     // Configure the cell...
     Conversion * conversion =
     [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = conversion.label;
+    [((RatesTableViewCell *)cell) setTrend:conversion.trend andQuote:conversion.quote];
     return cell;
 }
 
@@ -94,7 +179,7 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
         // Delete the row from the data source
         Conversion *conversion =
         [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [Conversion remove:conversion completion:^(BOOL contextDidSave, NSError *error) {
+        [Conversion unlike:conversion completion:^(BOOL contextDidSave, NSError *error) {
             if (!error) {
             }
             else {
@@ -104,7 +189,7 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
     }
 }
 
-#pragma mark - Fetched Results Controller
+#pragma mark - Fetched Results Controller Delegate
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
