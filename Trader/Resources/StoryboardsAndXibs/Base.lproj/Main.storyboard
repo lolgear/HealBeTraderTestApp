@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="gray" indentationWidth="10" textLabel="kLp-VH-c3n" style="IBUITableViewCellStyleDefault" id="u8v-QT-wvH">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="gray" indentationWidth="10" reuseIdentifier="RatesCell" textLabel="kLp-VH-c3n" style="IBUITableViewCellStyleDefault" id="u8v-QT-wvH" customClass="RatesTableViewCell">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="u8v-QT-wvH" id="AcC-36-vhm">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -38,6 +38,9 @@
                                         <constraint firstItem="N0Z-j7-ayG" firstAttribute="trailing" secondItem="kLp-VH-c3n" secondAttribute="trailing" id="ks0-3Q-3ny"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="trendLabel" destination="N0Z-j7-ayG" id="sXJ-Hr-PJa"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

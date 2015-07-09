@@ -10,4 +10,6 @@
 
 @interface RatesTableViewCell : UITableViewCell
 
+- (void) setTrend:(NSNumber *)trend andQuote:(NSNumber *)quote;
+
 @end
