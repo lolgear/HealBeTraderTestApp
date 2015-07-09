@@ -124,10 +124,10 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 #pragma mark - Refresh
 - (void)refresh:(id)sender {
-//    if (!self.actionsAvailable) {
-//        [sender endRefreshing];
-//        return;
-//    }
+    if (!self.actionsAvailable) {
+        [sender endRefreshing];
+        return;
+    }
     // update data here
     [self showProgressHudInCenter];
     self.progressHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
@@ -148,10 +148,13 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
     }];
 }
 
+#pragma mark - Configure Cell
+
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     // configure cell;
     Conversion * conversion = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = conversion.label;
+    [((RatesTableViewCell *)cell) setTrend:conversion.trend andQuote:conversion.quote];
 }
 
 #pragma mark - Table view data source
