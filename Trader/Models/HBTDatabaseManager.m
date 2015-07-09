@@ -10,14 +10,23 @@
 #import "JSONFileReader.h"
 #import "Currency.h"
 #import "Conversion.h"
-#import "FirstTimeConversion.h"
 #import "NSFoundationExtendedMethods.h"
 #import <AFNetworking/AFURLConnectionOperation.h>
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
+static NSOperationQueue *queue = nil;
+
 @implementation HBTDatabaseManager
+
++ (NSOperationQueue *)operationQueue {
+    if (!queue) {
+        queue = [[NSOperationQueue alloc] init];
+        queue.maxConcurrentOperationCount = 10;
+    }
+    return queue;
+}
 
 #pragma mark - Currency
 + (void)loadCurrencies:(MRSaveCompletionHandler)completion {
@@ -34,11 +43,10 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
             NSDictionary *responseDictionary = (NSDictionary *)responseObject;
             
             NSString *source = responseDictionary[@"source"];
-            NSString *pattern = [@"^" stringByAppendingString:source];
             NSArray *currencies =
             [[(NSDictionary *)responseDictionary[@"quotes"] allKeys] compactObjectsUsingBlock:^NSDictionary *(NSString *obj, NSUInteger idx) {
                 NSString *result =
-                [obj stringByReplacingOccurrencesOfStringPattern:pattern withString:@""];
+                [self targetFromConversion:obj withSource:source];
                 return @{@"code":result, @"name":result};
             }];
             [Currency saveAllFromDictionaries:currencies completion:completion];
@@ -59,13 +67,18 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 
 #pragma mark - Helpers / Conversion
++ (NSString*) targetFromConversion:(NSString *)conversion withSource:(NSString *)source {
+    NSString *pattern = [@"^" stringByAppendingString:source];
+    return [conversion stringByReplacingOccurrencesOfStringPattern:pattern withString:@""];
+}
+
 + (NSArray *) conversionsFromDictionary:(NSDictionary *)dictionary {
     NSDictionary * quotes = dictionary[@"quotes"];
     return
     [[quotes allKeys] mapObjectsUsingBlock:^NSDictionary *(NSString *obj, NSUInteger idx) {
         return @{
                  @"source" : dictionary[@"source"],
-                 @"target" : obj,
+                 @"target" : [self targetFromConversion:obj withSource:dictionary[@"source"]],
                  @"quote" : quotes[obj],
                  @"timestamp" : dictionary[@"timestamp"]
                  };
@@ -73,14 +86,8 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 }
 
 #pragma mark - Conversion
-+ (void)loadConversionsWithProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
-    
-    
-    NSArray *operations =
-    [[Conversion sourcesAndTargets] compactObjectsUsingBlock:^AFURLConnectionOperation *(NSDictionary *obj, NSUInteger idx) {
-        return [[HBTAPIClient sharedAPIClient] liveOperationForSource:obj[@"source"] withCurrencies:obj[@"currencies"]];
-    }];
-    
++ (NSArray *)downloadsForConversions:(NSArray *)conversions withProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
+    NSArray *operations = conversions;
     NSArray *requestOperations =
     [AFURLConnectionOperation batchOfRequestOperations:operations progressBlock:progressBlock completionBlock:^(NSArray *operations) {
         NSArray *responses =
@@ -99,16 +106,56 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
                     NSArray *conversions =
                     [self conversionsFromDictionary:responseDictionary];
                     for (NSDictionary * conversion in conversions) {
-                        [Conversion createWithDictionary:conversion inContext:localContext];
+                        [Conversion updateOrCreateWithDictionary:conversion inContext:localContext];
                     }
                 }
             }
         } completion:completion];
     }];
+
+    return requestOperations;
+}
+
++ (void)loadConversionsOperations:(NSArray *)conversions withProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
+    NSArray *requestOperations = [self downloadsForConversions:conversions withProgressBlock:progressBlock withCompletion:completion];
     
-    DDLogDebug(@"current queue %@", requestOperations);
+    [[self operationQueue] addOperations:requestOperations waitUntilFinished:NO];
+}
+
++ (void)loadFavoritedConversionsWithProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
+    NSArray *operations =
+    [[Conversion sourcesAndTargets] compactObjectsUsingBlock:^AFURLConnectionOperation *(NSDictionary *obj, NSUInteger idx) {
+        return [[HBTAPIClient sharedAPIClient] liveOperationForSource:obj[@"source"] withCurrencies:obj[@"currencies"]];
+    }];
     
-    [[NSOperationQueue mainQueue] addOperations:requestOperations waitUntilFinished:NO];
+    NSArray *requestOperations = [self downloadsForConversions:operations withProgressBlock:progressBlock withCompletion:completion];
+//    NSArray *requestOperations =
+//    [AFURLConnectionOperation batchOfRequestOperations:operations progressBlock:progressBlock completionBlock:^(NSArray *operations) {
+//        NSArray *responses =
+//        [operations compactObjectsUsingBlock:^NSDictionary *(AFURLConnectionOperation * obj, NSUInteger idx) {
+//            return ((NSDictionary *)[obj.responseData jsonObject]);
+//        }];
+//        
+//        [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
+//            for (NSDictionary *responseObject in responses) {
+//                if (responseObject[@"error"]) {
+//                    // do something :/
+//                    DDLogDebug(@"error %@", responseObject[@"error"]);
+//                }
+//                else {
+//                    NSDictionary *responseDictionary = (NSDictionary *)responseObject;
+//                    NSArray *conversions =
+//                    [self conversionsFromDictionary:responseDictionary];
+//                    for (NSDictionary * conversion in conversions) {
+//                        [Conversion createWithDictionary:conversion inContext:localContext];
+//                    }
+//                }
+//            }
+//        } completion:completion];
+//    }];
+//
+    DDLogDebug(@"requests: %@",requestOperations);
+    [[self operationQueue] addOperations:requestOperations waitUntilFinished:NO];
 //    [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
 //        for (NSDictionary * sourceDictionary in [Conversion sourcesAndTargets]){
 //            NSString *source = sourceDictionary[@"source"];
@@ -134,42 +181,53 @@ static DDLogLevel ddLogLevel = DDLogLevelDebug;
 //    } completion:completion];
 }
 
-+ (void)loadFirstTimeConversionsWithProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
-
++ (void)loadAllConversionsWithProgressBlock:(void (^)(NSUInteger, NSUInteger))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
     NSArray *allCurrenciesCodes = [[Currency MR_findAll] valueForKey:@"code"];
     NSArray *operations =
     [allCurrenciesCodes compactObjectsUsingBlock:^AFURLConnectionOperation *(NSString *obj, NSUInteger idx) {
         return [[HBTAPIClient sharedAPIClient] liveOperationForSource:obj withCurrencies:nil];
     }];
+
+    NSArray * requestOperations = [self downloadsForConversions:operations withProgressBlock:progressBlock withCompletion:completion];
     
-    NSArray *requestOperations =
-    [AFURLConnectionOperation batchOfRequestOperations:operations progressBlock:progressBlock completionBlock:^(NSArray *operations) {
-        NSArray *responses =
-        [operations compactObjectsUsingBlock:^NSDictionary *(AFURLConnectionOperation * obj, NSUInteger idx) {
-            return ((NSDictionary *)[obj.responseData jsonObject]);
-        }];
-        
-        [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-            for (NSDictionary *responseObject in responses) {
-                if (responseObject[@"error"]) {
-                    // do something :/
-                    DDLogDebug(@"error %@", responseObject[@"error"]);
-                }
-                else {
-                    NSDictionary *responseDictionary = (NSDictionary *)responseObject;
-                    NSArray *conversions =
-                    [self conversionsFromDictionary:responseDictionary];
-                    for (NSDictionary * conversion in conversions) {
-                        [FirstTimeConversion createWithDictionary:conversion inContext:localContext];
-                    }
-                }
-            }
-        } completion:completion];
-    }];
-    
-    DDLogDebug(@"current queue %@", requestOperations);
-    
-    [[NSOperationQueue mainQueue] addOperations:requestOperations waitUntilFinished:NO];
+    [[self operationQueue] addOperations:requestOperations waitUntilFinished:NO];
 }
 
+//+ (void)loadFirstTimeConversionsWithProgressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock withCompletion:(MRSaveCompletionHandler)completion {
+//
+//    NSArray *allCurrenciesCodes = [[Currency MR_findAll] valueForKey:@"code"];
+//    NSArray *operations =
+//    [allCurrenciesCodes compactObjectsUsingBlock:^AFURLConnectionOperation *(NSString *obj, NSUInteger idx) {
+//        return [[HBTAPIClient sharedAPIClient] liveOperationForSource:obj withCurrencies:nil];
+//    }];
+//
+//    NSArray *requestOperations =
+//    [AFURLConnectionOperation batchOfRequestOperations:operations progressBlock:progressBlock completionBlock:^(NSArray *operations) {
+//        NSArray *responses =
+//        [operations compactObjectsUsingBlock:^NSDictionary *(AFURLConnectionOperation * obj, NSUInteger idx) {
+//            return ((NSDictionary *)[obj.responseData jsonObject]);
+//        }];
+//        
+//        [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
+//            for (NSDictionary *responseObject in responses) {
+//                if (responseObject[@"error"]) {
+//                    // do something :/
+//                    DDLogDebug(@"error %@", responseObject[@"error"]);
+//                }
+//                else {
+//                    NSDictionary *responseDictionary = (NSDictionary *)responseObject;
+//                    NSArray *conversions =
+//                    [self conversionsFromDictionary:responseDictionary];
+//                    for (NSDictionary * conversion in conversions) {
+//                        [FirstTimeConversion createWithDictionary:conversion inContext:localContext];
+//                    }
+//                }
+//            }
+//        } completion:completion];
+//    }];
+//    
+//    DDLogDebug(@"current queue %@", requestOperations);
+//    [[self operationQueue] addOperations:requestOperations waitUntilFinished:NO];
+//}
+//
 @end
